@@ -1,0 +1,172 @@
+[gd_scene load_steps=3 format=3 uid="uid://7dgrnxitdesd"]
+
+[ext_resource type="Script" uid="uid://bmsjn1a4d8bud" path="res://scripts/main.gd" id="1_ig7tw"]
+[ext_resource type="Texture2D" uid="uid://drr1alll481c4" path="res://icon.svg" id="2_0wfyh"]
+
+[node name="Main" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_ig7tw")
+
+[node name="Background" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.133333, 0.133333, 0.192157, 1)
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+custom_minimum_size = Vector2(300, 300)
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -150.0
+offset_top = -150.0
+offset_right = 150.0
+offset_bottom = 150.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 16
+theme_override_constants/margin_top = 16
+theme_override_constants/margin_right = 16
+theme_override_constants/margin_bottom = 16
+
+[node name="MainVBox" type="VBoxContainer" parent="MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 16
+
+[node name="TorchTracker" type="Label" parent="MarginContainer/MainVBox"]
+layout_mode = 2
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+text = "[shadowdark torch]"
+horizontal_alignment = 1
+
+[node name="AddTorchButton" type="Button" parent="MarginContainer/MainVBox"]
+layout_mode = 2
+text = "light torch"
+
+[node name="TorchList" type="VBoxContainer" parent="MarginContainer/MainVBox"]
+layout_mode = 2
+
+[node name="SettingsButton" type="Button" parent="."]
+custom_minimum_size = Vector2(32, 32)
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -76.0
+offset_top = 9.0
+offset_right = 60.0
+offset_bottom = 145.0
+grow_horizontal = 0
+scale = Vector2(0.5, 0.5)
+icon = ExtResource("2_0wfyh")
+flat = true
+icon_alignment = 2
+
+[node name="SettingsPanel" type="Control" parent="."]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="ColorRect" type="ColorRect" parent="SettingsPanel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.360784, 0.290196, 0.235294, 1)
+
+[node name="CenterContainer" type="CenterContainer" parent="SettingsPanel/ColorRect"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -50.0
+offset_top = -90.5
+offset_right = 50.0
+offset_bottom = 90.5
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="SettingsVBox" type="VBoxContainer" parent="SettingsPanel/ColorRect/CenterContainer"]
+layout_mode = 2
+theme_override_constants/separation = 16
+
+[node name="TitleLabel" type="Label" parent="SettingsPanel/ColorRect/CenterContainer/SettingsVBox"]
+layout_mode = 2
+text = "Settings"
+horizontal_alignment = 3
+
+[node name="DurationHBox" type="HBoxContainer" parent="SettingsPanel/ColorRect/CenterContainer/SettingsVBox"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="SettingsPanel/ColorRect/CenterContainer/SettingsVBox/DurationHBox"]
+layout_mode = 2
+text = "Duration:"
+
+[node name="SpinBox" type="SpinBox" parent="SettingsPanel/ColorRect/CenterContainer/SettingsVBox/DurationHBox"]
+layout_mode = 2
+size_flags_horizontal = 10
+min_value = 1.0
+max_value = 999.0
+value = 6.0
+
+[node name="UnitsHBox" type="HBoxContainer" parent="SettingsPanel/ColorRect/CenterContainer/SettingsVBox"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="SettingsPanel/ColorRect/CenterContainer/SettingsVBox/UnitsHBox"]
+layout_mode = 2
+text = "Units:"
+
+[node name="OptionButton" type="OptionButton" parent="SettingsPanel/ColorRect/CenterContainer/SettingsVBox/UnitsHBox"]
+layout_mode = 2
+size_flags_horizontal = 10
+item_count = 3
+popup/item_0/text = "Minutes"
+popup/item_0/id = 0
+popup/item_1/text = "Turns"
+popup/item_1/id = 1
+popup/item_2/text = "Hours"
+popup/item_2/id = 2
+
+[node name="SoundHBox" type="HBoxContainer" parent="SettingsPanel/ColorRect/CenterContainer/SettingsVBox"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="SettingsPanel/ColorRect/CenterContainer/SettingsVBox/SoundHBox"]
+layout_mode = 2
+text = "Sound Alerts:"
+
+[node name="CheckBox" type="CheckBox" parent="SettingsPanel/ColorRect/CenterContainer/SettingsVBox/SoundHBox"]
+layout_mode = 2
+size_flags_horizontal = 10
+button_pressed = true
+
+[node name="ButtonsHBox" type="HBoxContainer" parent="SettingsPanel/ColorRect/CenterContainer/SettingsVBox"]
+layout_mode = 2
+size_flags_horizontal = 4
+
+[node name="CloseButton" type="Button" parent="SettingsPanel/ColorRect/CenterContainer/SettingsVBox/ButtonsHBox"]
+layout_mode = 2
+text = "Close"
+
+[node name="ApplyButton" type="Button" parent="SettingsPanel/ColorRect/CenterContainer/SettingsVBox/ButtonsHBox"]
+layout_mode = 2
+text = "Apply"
