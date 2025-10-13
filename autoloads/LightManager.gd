@@ -12,7 +12,7 @@ signal light_extinguished(message: String)
 # Party light state
 var party_light: Dictionary = {
 	"active": false,
-	"type": LightType.TORCH,
+	"type": LightType,
 	"source_name": "",
 	"total_seconds": 3600.0,  # Always 60 minutes per Shadowdark rules
 	"remaining_seconds": 3600.0,

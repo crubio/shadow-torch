@@ -86,7 +86,10 @@ text = "cast light spell"
 
 [node name="PartyLight" type="VBoxContainer" parent="MarginContainer/MainVBox"]
 layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 6
 theme_override_constants/separation = 32
+alignment = 1
 
 [node name="AudioWarning" type="AudioStreamPlayer2D" parent="MarginContainer"]
 stream = ExtResource("2_sugp2")

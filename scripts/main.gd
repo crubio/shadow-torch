@@ -3,14 +3,19 @@ extends Control
 class_name Main
 
 var _pending_light_type: LightManager.LightType
+var TorchUIScene := preload("res://scenes/torch_ui.tscn")
+var LightSpellUIScene := preload("res://scenes/light_spell_ui.tscn")
+var _current_torch_ui: Node = null
 
 # UI References
 var party_light_container: VBoxContainer
+var party_light_container_centered: CenterContainer
 var settings_button: Button
 var torch_tracker: Label
 var light_torch_button: Button
 var cast_light_spell_button: Button
 var replace_dialog: ConfirmationDialog
+var torch_ui
 
 # Light source tracking
 var duration_spinbox: SpinBox
@@ -26,6 +31,7 @@ func _ready() -> void:
 	light_torch_button = $MarginContainer/MainVBox/LightTorchButton
 	cast_light_spell_button = $MarginContainer/MainVBox/CastLightSpellButton
 	party_light_container = $MarginContainer/MainVBox/PartyLight
+	party_light_container_centered = $MarginContainer/MainVBox/CenterContainer
 	replace_dialog = $ReplaceLightSourceDialog
 
 	# Settings panel references
@@ -58,6 +64,43 @@ func _ready() -> void:
 func _process(delta: float) -> void:
 	# Let LightManager handle the timing and alerts
 	LightManager.update_light(delta)
+	# Just update time display, don't spawn/clear
+	_update_torch_time_display()
+	
+# create an instance of the visual torch
+func _spawn_torch_ui() -> void:
+	print("spawn_torch_ui")
+	if _current_torch_ui:
+		return
+	
+	# Choose correct scene based on light type
+	match LightManager.party_light.type:
+		LightManager.LightType.TORCH:
+			_current_torch_ui = TorchUIScene.instantiate()
+		LightManager.LightType.LIGHT_SPELL:
+			_current_torch_ui = LightSpellUIScene.instantiate()
+		_:
+			_current_torch_ui = TorchUIScene.instantiate()  # fallback
+	
+	party_light_container.add_child(_current_torch_ui)
+	# TODO connect signals
+
+func _update_torch_time_display() -> void:
+	# Update time display every frame (lightweight)
+	if _current_torch_ui and LightManager.party_light.active:
+		# Update time if the torch UI has a method for it
+		if _current_torch_ui.has_method("update_time_display"):
+			var time_string = TimeFormatter.format_time(LightManager.party_light.remaining_seconds, GameSettings.default_units)
+			var total_string = TimeFormatter.format_time(LightManager.party_light.total_seconds, GameSettings.default_units)
+			_current_torch_ui.update_time_display(time_string, total_string)
+	
+func _on_torch_ui_req_extinguish() -> void:
+	LightManager.extinguish_light()
+
+func _clear_torch_ui() -> void:
+	if _current_torch_ui:
+		_current_torch_ui.queue_free()
+		_current_torch_ui = null
 
 func _on_light_torch_pressed() -> void:
 	if LightManager.is_party_light_active():
@@ -82,26 +125,28 @@ func _on_replace_light_confirmed() -> void:
 # LightManager signal handlers
 func _on_light_changed(_light_data: Dictionary) -> void:
 	_update_party_display()
+	# Only spawn torch UI when light becomes active
+	if LightManager.party_light.active and not _current_torch_ui:
+		_spawn_torch_ui()
 
 func _on_light_warning(_percentage: float, message: String) -> void:
 	update_notifications(message)
+	_update_party_display()
 	play_alert_sound()
 
 func _on_light_extinguished(message: String) -> void:
 	update_notifications(message)
 	_update_party_display()
+	_clear_torch_ui()
 
 func _update_party_display() -> void:
 	# Update the main status label
 	if LightManager.party_light.active:
 		var time_string = TimeFormatter.format_time(LightManager.party_light.remaining_seconds, GameSettings.default_units)
 		torch_tracker.text = "Party has about " + time_string + " of " + LightManager.party_light.source_name.to_lower() + " left."
-		
-		# Update the party light container with current light source info
-		_update_party_light_container()
 	else:
 		torch_tracker.text = "Party has no light source."
-		_clear_party_light_container()
+		_clear_torch_ui()
 
 func _update_party_light_container() -> void:
 	# Clear existing content
