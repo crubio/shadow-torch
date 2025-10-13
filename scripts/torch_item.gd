@@ -75,13 +75,13 @@ func _update_torch_color(remaining_seconds: float, total_seconds: float, is_lit:
 		
 		if percent_remaining > 0.5:
 			# Green - healthy (>50%)
-			style_box.bg_color = Color(0.2, 0.8, 0.2, 0.6)
+			style_box.bg_color = Color(0.2, 0.8, 0.2, 0.5)
 		elif percent_remaining > 0.1:
 			# Yellow - getting low (10-50%)
-			style_box.bg_color = Color(0.8, 0.8, 0.2, 0.6)
+			style_box.bg_color = Color(0.8, 0.8, 0.2, 0.5)
 		else:
 			# Red - critical (<10%)
-			style_box.bg_color = Color(0.8, 0.2, 0.2, 0.6)
+			style_box.bg_color = Color(0.8, 0.2, 0.2, 0.5)
 	
 	# Apply the style to the PanelContainer
 	panel_container.add_theme_stylebox_override("panel", style_box)

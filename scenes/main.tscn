@@ -1,7 +1,19 @@
-[gd_scene load_steps=3 format=3 uid="uid://7dgrnxitdesd"]
+[gd_scene load_steps=5 format=3 uid="uid://7dgrnxitdesd"]
 
 [ext_resource type="Script" uid="uid://bmsjn1a4d8bud" path="res://scripts/main.gd" id="1_ig7tw"]
 [ext_resource type="Texture2D" uid="uid://drr1alll481c4" path="res://icon.svg" id="2_0wfyh"]
+[ext_resource type="AudioStream" uid="uid://6ooyd4eyxf2y" path="res://alert.wav" id="2_sugp2"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_0wfyh"]
+content_margin_left = 8.0
+content_margin_top = 8.0
+content_margin_right = 8.0
+content_margin_bottom = 8.0
+border_color = Color(0.8, 0.0392157, 0.0627451, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
 
 [node name="Main" type="Control"]
 layout_mode = 3
@@ -11,6 +23,19 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_ig7tw")
+
+[node name="Notifications" type="Label" parent="."]
+visible = false
+z_index = 1
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -268.0
+offset_bottom = 23.0
+grow_horizontal = 0
+theme_override_styles/normal = SubResource("StyleBoxFlat_0wfyh")
+text = "test"
 
 [node name="Background" type="ColorRect" parent="."]
 layout_mode = 1
@@ -51,12 +76,26 @@ theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 text = "[shadowdark torch]"
 horizontal_alignment = 1
 
-[node name="AddTorchButton" type="Button" parent="MarginContainer/MainVBox"]
+[node name="LightTorchButton" type="Button" parent="MarginContainer/MainVBox"]
 layout_mode = 2
 text = "light torch"
 
-[node name="TorchList" type="VBoxContainer" parent="MarginContainer/MainVBox"]
+[node name="CastLightSpellButton" type="Button" parent="MarginContainer/MainVBox"]
 layout_mode = 2
+text = "cast light spell"
+
+[node name="PartyLight" type="VBoxContainer" parent="MarginContainer/MainVBox"]
+layout_mode = 2
+theme_override_constants/separation = 32
+
+[node name="AudioWarning" type="AudioStreamPlayer2D" parent="MarginContainer"]
+stream = ExtResource("2_sugp2")
+
+[node name="AudioCritical" type="AudioStreamPlayer2D" parent="MarginContainer"]
+stream = ExtResource("2_sugp2")
+
+[node name="AudioEnd" type="AudioStreamPlayer2D" parent="MarginContainer"]
+stream = ExtResource("2_sugp2")
 
 [node name="SettingsButton" type="Button" parent="."]
 custom_minimum_size = Vector2(32, 32)
@@ -76,6 +115,8 @@ icon_alignment = 2
 
 [node name="SettingsPanel" type="Control" parent="."]
 visible = false
+z_index = 10
+z_as_relative = false
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -84,6 +125,7 @@ grow_horizontal = 2
 grow_vertical = 2
 
 [node name="ColorRect" type="ColorRect" parent="SettingsPanel"]
+visible = false
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -170,3 +212,8 @@ text = "Close"
 [node name="ApplyButton" type="Button" parent="SettingsPanel/ColorRect/CenterContainer/SettingsVBox/ButtonsHBox"]
 layout_mode = 2
 text = "Apply"
+
+[node name="ReplaceLightSourceDialog" type="ConfirmationDialog" parent="."]
+title = "Replace Light Source"
+size = Vector2i(260, 100)
+ok_button_text = "Replace Light Source"

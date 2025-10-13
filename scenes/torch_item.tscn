@@ -1,19 +1,39 @@
-[gd_scene load_steps=2 format=3 uid="uid://torchitem"]
+[gd_scene load_steps=3 format=3 uid="uid://torchitem"]
 
 [ext_resource type="Script" uid="uid://bb2dy8s1xkqyk" path="res://scripts/torch_item.gd" id="1_script"]
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ljwne"]
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+corner_radius_top_left = 2
+corner_radius_top_right = 2
+corner_radius_bottom_right = 2
+corner_radius_bottom_left = 2
+shadow_size = 8
+
 [node name="TorchItem" type="Control"]
-custom_minimum_size = Vector2(200, 24)
+custom_minimum_size = Vector2(300, 40)
 layout_mode = 3
-anchors_preset = 0
-offset_right = 279.0
-offset_bottom = 24.0
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -100.0
+offset_top = -12.0
+offset_right = 200.0
+offset_bottom = 40.0
+grow_horizontal = 2
+grow_vertical = 2
 script = ExtResource("1_script")
 
 [node name="PanelContainer" type="PanelContainer" parent="."]
 layout_mode = 0
-offset_right = 40.0
-offset_bottom = 40.0
+offset_right = 300.0
+offset_bottom = 52.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_ljwne")
 
 [node name="ContentHBox" type="HBoxContainer" parent="PanelContainer"]
 layout_mode = 2
