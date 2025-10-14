@@ -28,18 +28,18 @@ func _ready() -> void:
 	print("Main scene ready")
 	# Main UI references
 	torch_tracker = $MarginContainer/MainVBox/TorchTracker
-	light_torch_button = $MarginContainer/MainVBox/LightTorchButton
-	cast_light_spell_button = $MarginContainer/MainVBox/CastLightSpellButton
+	light_torch_button = $MarginContainer/MainVBox/HBoxContainer/LightTorchButton
+	cast_light_spell_button = $MarginContainer/MainVBox/HBoxContainer/CastLightSpellButton
 	party_light_container = $MarginContainer/MainVBox/PartyLight
 	party_light_container_centered = $MarginContainer/MainVBox/CenterContainer
 	replace_dialog = $ReplaceLightSourceDialog
 
 	# Settings panel references
-	duration_spinbox = $SettingsPanel/ColorRect/CenterContainer/SettingsVBox/DurationHBox/SpinBox
-	units_option = $SettingsPanel/ColorRect/CenterContainer/SettingsVBox/UnitsHBox/OptionButton
-	sound_checkbox = $SettingsPanel/ColorRect/CenterContainer/SettingsVBox/SoundHBox/CheckBox
-	close_button = $SettingsPanel/ColorRect/CenterContainer/SettingsVBox/ButtonsHBox/CloseButton
-	apply_button = $SettingsPanel/ColorRect/CenterContainer/SettingsVBox/ButtonsHBox/ApplyButton
+	duration_spinbox = $SettingsPanel/ColorRect/PanelContainer/CenterContainer/SettingsVBox/DurationHBox/SpinBox
+	units_option = $SettingsPanel/ColorRect/PanelContainer/CenterContainer/SettingsVBox/UnitsHBox/OptionButton
+	sound_checkbox = $SettingsPanel/ColorRect/PanelContainer/CenterContainer/SettingsVBox/SoundHBox/CheckBox
+	close_button = $SettingsPanel/ColorRect/PanelContainer/CenterContainer/SettingsVBox/ButtonsHBox/CloseButton
+	apply_button = $SettingsPanel/ColorRect/PanelContainer/CenterContainer/SettingsVBox/ButtonsHBox/ApplyButton
 	settings_button = $SettingsButton
 	
 	# Connect signals
@@ -177,6 +177,8 @@ func update_notifications(message: String) -> void:
 	notification_label.text = message
 	notification_label.visible = true
 	print("Notification: " + message)
+	await get_tree().create_timer(5.0).timeout # Pause for 2 seconds
+	notification_label.visible = false
 
 func _on_settings_pressed() -> void:
 	show_settings()
@@ -191,9 +193,9 @@ func _setup_settings_panel() -> void:
 	apply_button.text = "Apply"
 	
 	# Set label text
-	var duration_label = $SettingsPanel/ColorRect/CenterContainer/SettingsVBox/DurationHBox/Label
-	var units_label = $SettingsPanel/ColorRect/CenterContainer/SettingsVBox/UnitsHBox/Label  
-	var sound_label = $SettingsPanel/ColorRect/CenterContainer/SettingsVBox/SoundHBox/Label
+	var duration_label = $SettingsPanel/ColorRect/PanelContainer/CenterContainer/SettingsVBox/DurationHBox/Label
+	var units_label = $SettingsPanel/ColorRect/PanelContainer/CenterContainer/SettingsVBox/UnitsHBox/Label  
+	var sound_label = $SettingsPanel/ColorRect/PanelContainer/CenterContainer/SettingsVBox/SoundHBox/Label
 	
 	duration_label.text = "Default Duration:"
 	units_label.text = "Units:"
@@ -285,3 +287,8 @@ func _on_units_changed(index: int) -> void:
 	# Update the spinbox value and internal tracking
 	duration_spinbox.value = max(1.0, new_value)  # Don't allow values less than 1
 	GameSettings.default_units = new_unit
+
+
+func _on_timer_timeout(node) -> void:
+	print('timed out')
+	node.visible = false
