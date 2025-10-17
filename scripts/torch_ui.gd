@@ -5,6 +5,7 @@ signal request_extinguish()
 @onready var icon_sprite = $Icon  # Adjust to your actual node names
 @onready var point_light = $PointLight2D
 @onready var particles = $CPUParticles2D
+@onready var animate = $AnimatedSprite2D
 
 # Add a label for time display if you want
 @onready var time_label: Label
@@ -26,6 +27,8 @@ func _start_torch_effects() -> void:
 		point_light.enabled = true
 		point_light.energy = 0.8
 		point_light.color = Color(1.0, 0.9, 0.7)  # Warm torch color
+		
+	animate.play("start_burning")
 
 func _stop_torch_effects() -> void:
 	if particles:

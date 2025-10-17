@@ -216,6 +216,9 @@ func show_settings() -> void:
 	var settings_panel = $SettingsPanel
 	var color_rect = $SettingsPanel/ColorRect
 	
+	if party_light_container:
+		party_light_container.visible == false
+	
 	if settings_panel:
 		settings_panel.visible = true
 		settings_panel.z_index = 10
@@ -227,6 +230,8 @@ func hide_settings() -> void:
 	var settings_panel = $SettingsPanel
 	var color_rect = $SettingsPanel/ColorRect
 	
+	if party_light_container:
+		party_light_container.visible == true
 	if settings_panel:
 		settings_panel.visible = false
 	if color_rect:

@@ -1,6 +1,6 @@
 [gd_scene load_steps=8 format=3 uid="uid://ec56okchaq2a"]
 
-[ext_resource type="Script" path="res://scripts/light_spell_ui.gd" id="1_script"]
+[ext_resource type="Script" uid="uid://fp2vn2dxqgt3" path="res://scripts/light_spell_ui.gd" id="1_script"]
 [ext_resource type="Texture2D" uid="uid://drr1alll481c4" path="res://icon.svg" id="1_ugojk"]
 
 [sub_resource type="Gradient" id="Gradient_w1wtr"]
@@ -9,8 +9,23 @@ colors = PackedColorArray(0.982007, 0.851529, 0.425956, 1, 0, 0, 0, 1)
 [sub_resource type="GradientTexture2D" id="GradientTexture2D_rd38p"]
 gradient = SubResource("Gradient_w1wtr")
 fill = 1
-fill_from = Vector2(0.504274, 0.549145)
-fill_to = Vector2(0.871795, 0.200855)
+fill_from = Vector2(0.49359, 0.536325)
+fill_to = Vector2(0.769231, 0.316239)
+
+[sub_resource type="Animation" id="Animation_s0qk8"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("PointLight2D:energy")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [0.8]
+}
 
 [sub_resource type="Animation" id="Animation_8u5w5"]
 resource_name = "pulse"
@@ -27,21 +42,6 @@ tracks/0/keys = {
 "transitions": PackedFloat32Array(3.24901, 1, 1, 1),
 "update": 0,
 "values": [1.4, 1.8, 2.2, 1.4]
-}
-
-[sub_resource type="Animation" id="Animation_s0qk8"]
-length = 0.001
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("PointLight2D:energy")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [0.8]
 }
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_4v4ex"]
