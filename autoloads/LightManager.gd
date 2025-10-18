@@ -8,6 +8,7 @@ enum LightType { TORCH, LIGHT_SPELL }
 signal light_changed(light_data: Dictionary)
 signal light_warning(percentage: float, message: String)
 signal light_extinguished(message: String)
+signal light_timer_updated(remaining_seconds: float)
 
 # Party light state
 var party_light: Dictionary = {
@@ -21,6 +22,26 @@ var party_light: Dictionary = {
 	"alerted_0": false,
 	"is_lit": false
 }
+
+var _last_tracked_state: Dictionary = {
+  "active": false,
+  "type": -1,
+  "is_lit": false
+}
+
+var _last_tracked_seconds: int = -1
+
+func _emit_on_change() -> void:
+	var current_state = {
+		"active": party_light.active,
+		"type": party_light.type,
+		"is_lit": party_light.is_lit
+	}
+  
+	if current_state != _last_tracked_state:
+		_last_tracked_state = current_state
+		light_changed.emit(party_light)
+		print("light_changed emitted - active: %s, type: %s, is_lit: %s" % [current_state.active, current_state.type, current_state.is_lit])
 
 func _ready() -> void:
 	# Connect to game loop - process will be called from main scene
@@ -54,8 +75,8 @@ func _create_light_source(type: LightType) -> void:
 		"alerted_0": false,
 		"is_lit": true
 	}
-	
-	light_changed.emit(party_light)
+
+	_emit_on_change()
 	print("Party lit a " + source_name.to_lower() + "!")
 
 func extinguish_light() -> void:
@@ -63,7 +84,7 @@ func extinguish_light() -> void:
 		party_light.active = false
 		party_light.is_lit = false
 		light_extinguished.emit("The " + party_light.source_name.to_lower() + " has been extinguished.")
-		light_changed.emit(party_light)
+		_emit_on_change()
 
 func replace_light_source(type: LightType) -> void:
 	extinguish_light()
@@ -77,12 +98,16 @@ func update_light(delta: float) -> void:
 	
 	party_light.remaining_seconds = max(0.0, party_light.remaining_seconds - delta)
 	
+	if party_light.active:
+		light_timer_updated.emit(party_light.remaining_seconds)
+	
 	if party_light.remaining_seconds <= 0.0:
 		party_light.active = false
 		party_light.is_lit = false
 		light_extinguished.emit("DARKNESS ARISES! You are in danger!")
-		
-	light_changed.emit(party_light)
+		light_extinguished.emit("The " + party_light.source_name.to_lower() + " has burned out.")
+
+	_emit_on_change()
 
 func _check_light_percentage() -> void:
 	var percentage_left = party_light.remaining_seconds / party_light.total_seconds

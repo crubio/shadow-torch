@@ -8,14 +8,13 @@ var LightSpellUIScene := preload("res://scenes/light_spell_ui.tscn")
 var _current_torch_ui: Node = null
 
 # UI References
+var main_background: ColorRect
 var party_light_container: VBoxContainer
-var party_light_container_centered: CenterContainer
 var settings_button: Button
 var torch_tracker: Label
 var light_torch_button: Button
 var cast_light_spell_button: Button
 var replace_dialog: ConfirmationDialog
-var torch_ui
 
 # Light source tracking
 var duration_spinbox: SpinBox
@@ -31,7 +30,6 @@ func _ready() -> void:
 	light_torch_button = $MarginContainer/MainVBox/HBoxContainer/LightTorchButton
 	cast_light_spell_button = $MarginContainer/MainVBox/HBoxContainer/CastLightSpellButton
 	party_light_container = $MarginContainer/MainVBox/PartyLight
-	party_light_container_centered = $MarginContainer/MainVBox/CenterContainer
 	replace_dialog = $ReplaceLightSourceDialog
 
 	# Settings panel references
@@ -55,6 +53,7 @@ func _ready() -> void:
 	LightManager.light_changed.connect(_on_light_changed)
 	LightManager.light_warning.connect(_on_light_warning)
 	LightManager.light_extinguished.connect(_on_light_extinguished)
+	LightManager.light_timer_updated.connect(_on_light_timer_updated)
 
 	# Initialize settings panel
 	_setup_settings_panel()
@@ -64,8 +63,6 @@ func _ready() -> void:
 func _process(delta: float) -> void:
 	# Let LightManager handle the timing and alerts
 	LightManager.update_light(delta)
-	# Just update time display, don't spawn/clear
-	_update_torch_time_display()
 	
 # create an instance of the visual torch
 func _spawn_torch_ui() -> void:
@@ -83,16 +80,6 @@ func _spawn_torch_ui() -> void:
 			_current_torch_ui = TorchUIScene.instantiate()  # fallback
 	
 	party_light_container.add_child(_current_torch_ui)
-	# TODO connect signals
-
-func _update_torch_time_display() -> void:
-	# Update time display every frame (lightweight)
-	if _current_torch_ui and LightManager.party_light.active:
-		# Update time if the torch UI has a method for it
-		if _current_torch_ui.has_method("update_time_display"):
-			var time_string = TimeFormatter.format_time(LightManager.party_light.remaining_seconds, GameSettings.default_units)
-			var total_string = TimeFormatter.format_time(LightManager.party_light.total_seconds, GameSettings.default_units)
-			_current_torch_ui.update_time_display(time_string, total_string)
 	
 func _on_torch_ui_req_extinguish() -> void:
 	LightManager.extinguish_light()
@@ -135,6 +122,7 @@ func _on_light_warning(_percentage: float, message: String) -> void:
 	play_alert_sound()
 
 func _on_light_extinguished(message: String) -> void:
+	print("Light extinguished: " + message)
 	update_notifications(message)
 	_update_party_display()
 	_clear_torch_ui()
@@ -147,26 +135,6 @@ func _update_party_display() -> void:
 	else:
 		torch_tracker.text = "Party has no light source."
 		_clear_torch_ui()
-
-func _update_party_light_container() -> void:
-	# Clear existing content
-	_clear_party_light_container()
-	
-	if LightManager.party_light.active:
-		# Create a label showing the current light source details
-		var light_info_label = Label.new()
-		var time_string = TimeFormatter.format_time(LightManager.party_light.remaining_seconds, GameSettings.default_units)
-		var total_time = TimeFormatter.format_time(LightManager.party_light.total_seconds, GameSettings.default_units)
-		
-		light_info_label.text = "%s: %s / %s" % [LightManager.party_light.source_name, time_string, total_time]
-		light_info_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-		
-		party_light_container.add_child(light_info_label)
-
-func _clear_party_light_container() -> void:
-	# Remove all children from the party light container
-	for child in party_light_container.get_children():
-		child.queue_free()
 
 func play_alert_sound() -> void:
 	if GameSettings.sound_alerts_enabled:
@@ -217,7 +185,7 @@ func show_settings() -> void:
 	var color_rect = $SettingsPanel/ColorRect
 	
 	if party_light_container:
-		party_light_container.visible == false
+		party_light_container.visible = false
 	
 	if settings_panel:
 		settings_panel.visible = true
@@ -231,7 +199,7 @@ func hide_settings() -> void:
 	var color_rect = $SettingsPanel/ColorRect
 	
 	if party_light_container:
-		party_light_container.visible == true
+		party_light_container.visible = true
 	if settings_panel:
 		settings_panel.visible = false
 	if color_rect:
@@ -293,7 +261,7 @@ func _on_units_changed(index: int) -> void:
 	duration_spinbox.value = max(1.0, new_value)  # Don't allow values less than 1
 	GameSettings.default_units = new_unit
 
-
-func _on_timer_timeout(node) -> void:
-	print('timed out')
-	node.visible = false
+func _on_light_timer_updated(remaining_seconds: float) -> void:
+	if LightManager.party_light.active:
+		var time_string = TimeFormatter.format_time(remaining_seconds, GameSettings.default_units)
+		torch_tracker.text = "Party has about " + time_string + " of " + LightManager.party_light.source_name.to_lower() + " left."

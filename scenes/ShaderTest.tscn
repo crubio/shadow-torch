@@ -1,0 +1,20 @@
+[gd_scene load_steps=4 format=3 uid="uid://cl2j8urxun84m"]
+
+[ext_resource type="Shader" uid="uid://bvm3drji251gn" path="res://shaders/main.gdshader" id="1_piusi"]
+[ext_resource type="Texture2D" uid="uid://cetk8o8s4fuiw" path="res://assets/dungeon-ruins-nighttime.png" id="2_piusi"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_1y7n5"]
+shader = ExtResource("1_piusi")
+shader_parameter/ambient_color = Vector3(1, 0.7, 0.3)
+shader_parameter/ambient_intensity = 0.462
+shader_parameter/flicker_speed = 5.0
+shader_parameter/flicker_amount = 0.488
+
+[node name="ShaderTest" type="TextureRect"]
+material = SubResource("ShaderMaterial_1y7n5")
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("2_piusi")
